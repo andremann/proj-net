@@ -58,13 +58,14 @@ def parseOrganisations(root):
         order = getAttributeOrNone(org, 'order')
         org_type = getAttributeOrNone(org, 'type')
         org_id = getElementOrNone(org, './cordis:id')
+        org_rcn = getElementOrNone(org, './cordis:rcn')
         short_name = getElementOrNone(org, './cordis:shortName')
         legal_name = getElementOrNone(org, './cordis:legalName')
         address = getNode(org, './cordis:address')
         city = getElementOrNone(address, './cordis:city') if address is not None else None
         country = getElementOrNone(address, './cordis:country') if address is not None else None
-        
-        organisations.append([rcn, org_id, order, org_type,
+       
+        organisations.append([rcn, org_id, org_rcn, order, org_type,
                               short_name, legal_name,
                               city, country, contribution])
     return organisations
