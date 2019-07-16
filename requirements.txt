@@ -1,10 +1,11 @@
 # local package
 -e .
 
-# For jupiter nootebooks
 jupyter
 pandas
 plotly
 pycountry_convert
 networkx
 matplotlib
+python-dotenv
+click
