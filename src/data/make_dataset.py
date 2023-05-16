@@ -13,9 +13,27 @@ import xml.etree.ElementTree as ET
 
 logger = logging.getLogger(__name__)
 
+RAW = 'data/raw'
+PROCESSED = 'data/processed'
 
-def download_zip(env_var, path):
-    url = os.environ.get(env_var)
+HORIZON_URL = 'https://cordis.europa.eu/data/cordis-HORIZONprojects-csv.zip'
+H2020_URL = 'http://cordis.europa.eu/data/cordis-h2020projects-csv.zip'
+FP7_URL = 'http://cordis.europa.eu/data/cordis-fp7projects-csv.zip'
+CSV_FILES = ['https://cordis.europa.eu/data/FP6/cordis-fp6projects.csv',
+             'https://cordis.europa.eu/data/FP6/cordis-fp6organizations.csv',
+             'https://cordis.europa.eu/data/FP5/cordis-fp5organizations.csv',
+             'https://cordis.europa.eu/data/FP5/cordis-fp5projects.csv',
+             'https://cordis.europa.eu/data/FP4/cordis-fp4organizations.csv',
+             'https://cordis.europa.eu/data/FP4/cordis-fp4projects.csv',
+             'https://cordis.europa.eu/data/FP3/cordis-fp3organizations.csv',
+             'https://cordis.europa.eu/data/FP3/cordis-fp3projects.csv',
+             'https://cordis.europa.eu/data/FP2/cordis-fp2projects.csv',
+             'https://cordis.europa.eu/data/FP2/cordis-fp2organizations.csv',
+             'https://cordis.europa.eu/data/FP1/cordis-fp1organizations.csv',
+             'https://cordis.europa.eu/data/FP1/cordis-fp1projects.csv']
+
+
+def download_zip(url, path):
     zip_name = urlsplit(url).path.split('/')[-1]
     unzipped_folder = zip_name.split('.')[0]
     zip_path = os.path.join(path, zip_name)
@@ -34,9 +52,8 @@ def download_zip(env_var, path):
         os.remove(zip_path)
 
 
-def download_csv(env_var, path):
-    urls = os.environ.get(env_var)
-    for url in urls.split(','):
+def download_csv(urls, path):
+    for url in urls:
         csv_name = urlsplit(url).path.split('/')[-1]
         csv_path = os.path.join(path, csv_name)
         if not os.path.exists(csv_path):
@@ -44,15 +61,13 @@ def download_csv(env_var, path):
             urlretrieve(url, csv_path)
 
 
-@click.command()
-@click.argument('input_filepath', type=click.Path(exists=True), envvar='RAW')
-def main(input_filepath):
+def main():
     """ Downloads data into ../raw.
     """
-    download_zip('HORIZON_URL', input_filepath)
-    download_zip('H2020_URL', input_filepath)
-    download_zip('FP7_URL', input_filepath)
-    download_csv('CSV_FILES', input_filepath)
+    download_zip(HORIZON_URL, RAW)
+    download_zip(H2020_URL, RAW)
+    download_zip(FP7_URL, RAW)
+    download_csv(CSV_FILES, RAW)
 
 
 if __name__ == '__main__':
@@ -66,5 +81,4 @@ if __name__ == '__main__':
     # load up the .env entries as environment variables
     load_dotenv(find_dotenv())
 
-    NS = json.loads(os.environ.get('NAMESPACES'))
     main()
