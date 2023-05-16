@@ -1,20 +1,14 @@
 # -*- coding: utf-8 -*-
 import os
-import json
-from urllib.request import urlretrieve, urlopen
+from urllib.request import urlretrieve
 from urllib.parse import urlsplit
 import zipfile
-import csv
 import click
 import logging
 from pathlib import Path
 from dotenv import find_dotenv, load_dotenv
-import xml.etree.ElementTree as ET
 
 logger = logging.getLogger(__name__)
-
-RAW = 'data/raw'
-PROCESSED = 'data/processed'
 
 HORIZON_URL = 'https://cordis.europa.eu/data/cordis-HORIZONprojects-csv.zip'
 H2020_URL = 'http://cordis.europa.eu/data/cordis-h2020projects-csv.zip'
@@ -61,13 +55,15 @@ def download_csv(urls, path):
             urlretrieve(url, csv_path)
 
 
-def main():
+@click.command()
+@click.argument('output_filepath', type=click.Path(exists=True))
+def main(output_filepath):
     """ Downloads data into ../raw.
     """
-    download_zip(HORIZON_URL, RAW)
-    download_zip(H2020_URL, RAW)
-    download_zip(FP7_URL, RAW)
-    download_csv(CSV_FILES, RAW)
+    download_zip(HORIZON_URL, output_filepath)
+    download_zip(H2020_URL, output_filepath)
+    download_zip(FP7_URL, output_filepath)
+    download_csv(CSV_FILES, output_filepath)
 
 
 if __name__ == '__main__':
